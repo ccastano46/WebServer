@@ -1,27 +1,23 @@
 package org.example.runner;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
-public  class InvokeMain {
-    public static void main(String... args) {
+public class InvokeMain {
+
+    // Works both from terminal and programmatically
+    public static void main(String className, String... targetArgs) {
+        invoke(className, targetArgs);
+    }
+
+    private static void invoke(String className, String[] targetArgs) {
         try {
-            Class<?> c = Class.forName(args[0]);
-            Class[] argTypes = new Class[]{String[].class};
-            Method main = c.getDeclaredMethod("main", argTypes);
-            String[] mainArgs = Arrays.copyOfRange(args, 1, args.length);
-            System.out.format("invoking %s.main()%n", c.getName());
-            main.invoke(null, (Object) mainArgs);
-            // production code should handle these exceptions more gracefully
-        } catch (ClassNotFoundException x) {
-            x.printStackTrace();
-        } catch (NoSuchMethodException x) {
-            x.printStackTrace();
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Class<?> c = Class.forName(className);
+            Method main = c.getDeclaredMethod("main", String[].class);
+            main.setAccessible(true);
+            System.out.format("Invoking %s.main()%n", c.getName());
+            main.invoke(null, (Object) targetArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
