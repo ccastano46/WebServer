@@ -179,7 +179,7 @@ mvn clean compile
 Execute the WebFramework application:
 
 ```bash
-java -cp target/classes org.example.runner.WebServerMain
+java -cp target/classes org.example.WebServerMain
 ```
 
 **Expected output:**
